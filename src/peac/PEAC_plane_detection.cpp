@@ -45,11 +45,20 @@ void iniLoad(std::string iniFileName) {
 	}
 }
 
-
 plane_detection::plane_detection()
 {
+
+}
+
+void plane_detection::initial(string parameter_address)
+{
+	if (parameter_address.empty())
+	{
+		cout<<"parameter address is error"<<endl;
+	}
+	
     showWindow = iniGet("showWindow", true);
-    iniLoad("/home/lichao/catkin_pathplanning/src/peac/config/plane_fitter_pcd.ini");
+    iniLoad(parameter_address);
     unitScaleFactor = iniGet<double>("unitScaleFactor", 1.0f);
 	outputDir = iniGet<std::string>("outputDir", ".");
     std::string cmd="mkdir -p "+outputDir;
@@ -78,6 +87,9 @@ void plane_detection::detect(pcl::PointCloud<pcl::PointXYZ> & pc)
 {
 	// pc.height = 480;
 	// pc.width = 680;
+	planes_info.clear();
+	planes.clear();
+	
 	pc.points.resize(pc.height * pc.width);
 	std::cout<<pc.width<<" "<<pc.height<<std::endl;
 	std::cout<<"unitScaleFactor: "<<unitScaleFactor<<std::endl;
@@ -93,8 +105,9 @@ void plane_detection::detect(pcl::PointCloud<pcl::PointXYZ> & pc)
 	for (auto & plane_info : pf.extractedPlanes)
 	{
 		Eigen::Vector3d normal(plane_info->normal[0], plane_info->normal[1], plane_info->normal[2]);
-		Eigen::Vector3d center(plane_info->center[0], plane_info->center[1], plane_info->center[2]);
-		planes_info.emplace_back(std::make_pair(normal, center));
+		// 在进行提取时，会把平面按照unitScaleFactor放大，这个中点需要恢复
+		Eigen::Vector3d center(plane_info->center[0]/unitScaleFactor, plane_info->center[1]/unitScaleFactor, plane_info->center[2]/unitScaleFactor);
+		planes_info.emplace_back(planeInfo(normal, center));
 	}
 	planes = pf.planes;
 	

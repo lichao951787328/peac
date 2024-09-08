@@ -27,6 +27,17 @@ struct OrganizedImage3D {
 typedef OrganizedImage3D<pcl::PointXYZ> ImageXYZ;
 typedef ahc::PlaneFitter< ImageXYZ > PlaneFitter;
 typedef pcl::PointCloud<pcl::PointXYZRGB> CloudXYZRGB;
+struct planeInfo
+{
+	Eigen::Vector3d normal;
+	Eigen::Vector3d center;
+	planeInfo(Eigen::Vector3d normal_, Eigen::Vector3d center_)
+	{
+		normal = normal_;
+		center = center_;
+	}
+};
+
 class plane_detection
 {
 private:
@@ -38,10 +49,11 @@ private:
 	
     int process_index = 0;
 public:
-	vector<std::pair<Eigen::Vector3d, Eigen::Vector3d> > planes_info; // normal and center
+	vector<planeInfo> planes_info; // normal and center
 	vector<cv::Mat> planes;
 	cv::Mat result;
     plane_detection();
+    void initial(string parameter_address);
 
     void detect(pcl::PointCloud<pcl::PointXYZ> & pc);
     ~plane_detection();

@@ -17,6 +17,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "plane_detection");
     ros::NodeHandle nh;
     ros::Subscriber sub = nh.subscribe("/depth_camera/depth_camera/points", 1, detect_callback);
+    pd.initial("/home/lichao/catkin_pathplanning/src/peac/config/plane_fitter_pcd.ini");
     ros::spin();
     return 0;
 }

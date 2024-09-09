@@ -3,6 +3,7 @@
 #include "peac/AHCUtils.hpp"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <planeInfo.h>
 #include <vector>
 using namespace std;
 
@@ -27,16 +28,7 @@ struct OrganizedImage3D {
 typedef OrganizedImage3D<pcl::PointXYZ> ImageXYZ;
 typedef ahc::PlaneFitter< ImageXYZ > PlaneFitter;
 typedef pcl::PointCloud<pcl::PointXYZRGB> CloudXYZRGB;
-struct planeInfo
-{
-	Eigen::Vector3d normal;
-	Eigen::Vector3d center;
-	planeInfo(Eigen::Vector3d normal_, Eigen::Vector3d center_)
-	{
-		normal = normal_;
-		center = center_;
-	}
-};
+
 
 class plane_detection
 {

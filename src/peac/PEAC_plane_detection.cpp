@@ -1,5 +1,6 @@
 #include <peac/PEAC_plane_detection.hpp>
 #include <pcl/common/transforms.h>
+// #include <glog/logging.h>
 std::map<std::string, std::string> ini;
 template<class T>
 T iniGet(std::string key, T default_value) {
@@ -105,11 +106,20 @@ void plane_detection::detect(pcl::PointCloud<pcl::PointXYZ> & pc)
 	for (auto & plane_info : pf.extractedPlanes)
 	{
 		Eigen::Vector3d normal(plane_info->normal[0], plane_info->normal[1], plane_info->normal[2]);
+		
 		// 在进行提取时，会把平面按照unitScaleFactor放大，这个中点需要恢复
 		Eigen::Vector3d center(plane_info->center[0]/unitScaleFactor, plane_info->center[1]/unitScaleFactor, plane_info->center[2]/unitScaleFactor);
 		planes_info.emplace_back(planeInfo(normal, center));
 	}
 	planes = pf.planes;
+	// for (int i = 0; i < pf.planes.size(); i++)
+	// {
+		// std::cout<<pf.extractedPlanes.at(i)->normal[0]<<" "<<pf.extractedPlanes.at(i)->normal[1]<<" "<<pf.extractedPlanes.at(i)->normal[2]<<std::endl;
+		// std::cout<<pf.extractedPlanes.at(i)->center[0]<<" "<<pf.extractedPlanes.at(i)->center[1]<<" "<<pf.extractedPlanes.at(i)->center[2]<<std::endl;
+		// cv::imshow("image_" + std::to_string(i), pf.planes.at(i));
+		// cv::waitKey(0);
+	// }
+	
 	
 	double process_ms=timer.toc();
 	std::cout<<process_ms<<" ms"<<std::endl;
